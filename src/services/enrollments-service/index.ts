@@ -21,15 +21,13 @@ async function getAddressFromCEP({ cep }: { cep: string }): Promise<AddressType>
   }
   const { logradouro, complemento, bairro, localidade, uf } = result.data;
 
-  const address: AddressType = {
+  return {
     logradouro,
     complemento,
     bairro,
     cidade: localidade,
     uf,
   };
-
-  return address;
 }
 
 async function getOneWithAddressByUserId(userId: number): Promise<GetOneWithAddressByUserIdResult> {

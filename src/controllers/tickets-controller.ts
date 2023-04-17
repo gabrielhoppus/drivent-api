@@ -12,12 +12,12 @@ export async function getTicketTypes(req: AuthenticatedRequest, res: Response) {
   }
 }
 
-// export async function getUserTicket(req: AuthenticatedRequest, res: Response) {
-//     const id = req.body as number;
-//     try{
-//         const userId = await ticketService.getUserById(id)
-//         const enrollmentId = await ticketService.getEnrollmentByUserId(userId)
-//     } catch (error) {
-//         return res.sendStatus(httpStatus.BAD_REQUEST);
-//     }
-// }
+export async function getUserTicket(req: AuthenticatedRequest, res: Response) {
+  const userId = req.body as number;
+  try {
+    const tickets = await ticketService.getTicketByUserId(userId);
+    return res.status(httpStatus.OK).send(tickets);
+  } catch (error) {
+    return res.sendStatus(httpStatus.BAD_REQUEST);
+  }
+}

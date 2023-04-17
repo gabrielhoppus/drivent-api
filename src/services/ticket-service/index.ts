@@ -7,23 +7,8 @@ async function getTicketTypes() {
   return types;
 }
 
-async function getUserById(id: number) {
-  const userId = await ticketRepository.findUserById(id);
-  return userId;
-}
-
-async function getEnrollmentByUserId(userId: number) {
-  const enrollmentId = await ticketRepository.findEnrollmentbyUserId(userId);
-
-  if (!enrollmentId) throw notFoundError();
-
-  return enrollmentId;
-}
-
-async function getTicketByEnrollmentId(id: number) {
-  const userId = getUserById(id);
-  const enrollmentId = getEnrollmentByUserId(userId);
-  const ticket = await ticketRepository.findTicketByEnrollmentId(enrollmentId);
+async function getTicketByEnrollmentId(userId: number) {
+  const ticket = await ticketRepository.findTicketByUserId(userId);
   return ticket;
 }
 

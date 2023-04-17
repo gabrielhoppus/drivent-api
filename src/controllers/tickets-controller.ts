@@ -19,7 +19,24 @@ export async function getUserTicket(req: AuthenticatedRequest, res: Response) {
 
     return res.send(tickets);
   } catch (error) {
-    if (error.name !== 'notFoundError') return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
-    return res.sendStatus(httpStatus.NOT_FOUND);
+    if (error.name === 'NotFoundError') return res.sendStatus(httpStatus.NOT_FOUND);
+    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+  }
+}
+
+export async function createTicket(req: AuthenticatedRequest, res: Response) {
+  try {
+    const { userId } = req;
+    const { ticketTypeId } = req.body;
+
+    if (!ticketTypeId) return res.sendStatus(httpStatus.BAD_REQUEST);
+
+    const ticket = await ticketService.createTicket(userId, ticketTypeId);
+    console.log('3');
+    console.log(ticket);
+    return res.status(httpStatus.CREATED).send(ticket);
+  } catch (error) {
+    if (error.name === 'NotFoundError') return res.sendStatus(httpStatus.NOT_FOUND);
+    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
 }

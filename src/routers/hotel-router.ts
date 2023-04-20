@@ -1,8 +1,9 @@
 import { Router } from 'express';
+import { getHotels } from '@/controllers/hortel-controller';
 
 const hotelRouter = Router();
 
-hotelRouter.get('/');
-hotelRouter.get('/:hotelId');
+hotelRouter.get('/', getHotels);
+// hotelRouter.get('/:hotelId');
 
 export { hotelRouter };

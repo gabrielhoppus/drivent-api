@@ -20,3 +20,21 @@ export async function getHotels(req: AuthenticatedRequest, res: Response) {
     return res.sendStatus(httpStatus.BAD_REQUEST);
   }
 }
+
+export async function getRooms(req: AuthenticatedRequest, res: Response) {
+  try {
+    const { userId } = req;
+    const id = Number(req.params.hotelId);
+
+    const tickets = await ticketService.getTicketByUserId(userId);
+
+    if (tickets.status !== 'PAID' || tickets.TicketType.isRemote === true || tickets.TicketType.includesHotel !== true)
+      return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
+
+    const rooms = await hotelService.getRooms(id);
+    return res.status(httpStatus.OK).send(rooms);
+  } catch (error) {
+    if (error.name === 'NotFoundError') return res.sendStatus(httpStatus.NOT_FOUND);
+    return res.sendStatus(httpStatus.BAD_REQUEST);
+  }
+}

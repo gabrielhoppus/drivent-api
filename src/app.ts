@@ -29,7 +29,7 @@ app
   .use('/enrollments', enrollmentsRouter)
   .use('/tickets', ticketRouter)
   .use('/payments', paymentRouter)
-  .use('/hortels', hotelRouter)
+  .use('/hotels', hotelRouter)
   .use(handleApplicationErrors);
 
 export function init(): Promise<Express> {

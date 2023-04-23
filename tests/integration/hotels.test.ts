@@ -13,7 +13,7 @@ import {
   createTicketType,
   createTicket,
 } from '../factories';
-import { createHotel } from '../factories/hotel-factory';
+import { createHotel } from '../factories/hotels-factory';
 import { prisma } from '@/config';
 import app, { init } from '@/app';
 
@@ -52,6 +52,7 @@ describe('GET /hotels/', () => {
   });
   describe('when token is valid', () => {
     it('should respond with status 404 when user doesnt have an enrollment yet', async () => {
+      const user = await createUser();
       const token = await generateValidToken();
 
       const response = await server.get('/hotels').set('Authorization', `Bearer ${token}`);

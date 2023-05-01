@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { ticketRouter } from './ticket-router';
 import { authenticateToken } from '@/middlewares';
 import { getPayment, makePayment } from '@/controllers/payment-controller';
 

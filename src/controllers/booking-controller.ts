@@ -18,21 +18,24 @@ export async function getBookingById(req: AuthenticatedRequest, res: Response) {
 
 export async function createBooking(req: AuthenticatedRequest, res: Response) {
   try {
-    const userId = req.userId as number;
-    const roomId = req.body;
+    const { userId } = req;
+
+    const roomId = req.body.roomId;
+
+    if (roomId < 1) return res.sendStatus(httpStatus.FORBIDDEN);
 
     const tickets = await ticketService.getTicketByUserId(userId);
 
     if (tickets.status !== 'PAID' || tickets.TicketType.isRemote === true || tickets.TicketType.includesHotel !== true)
-      return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
+      return res.sendStatus(httpStatus.FORBIDDEN);
 
     const booking = await bookingService.bookRoom(userId, roomId);
 
-    return res.send(booking.id).status(httpStatus.OK);
+    return res.send({ bookingId: booking.id }).status(httpStatus.OK);
   } catch (error) {
-    if (error.name === 'NotFoundError') return res.sendStatus(httpStatus.NOT_FOUND);
-    if (error.name === 'ForbiddenError') return res.sendStatus(httpStatus.FORBIDDEN);
-    return res.sendStatus(httpStatus.BAD_REQUEST);
+    if (error.name === 'NotFoundError') return res.status(httpStatus.NOT_FOUND).send(error.message);
+    if (error.name === 'ForbiddenError') return res.status(httpStatus.FORBIDDEN).send(error.message);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
   }
 }
 
@@ -44,10 +47,10 @@ export async function updateBooking(req: AuthenticatedRequest, res: Response) {
 
     const booking = await bookingService.updateBookingRoom(userId, bookingId, roomId);
 
-    return res.send(booking.id).status(httpStatus.OK);
+    return res.send({ bookingId: booking.id }).status(httpStatus.OK);
   } catch (error) {
     if (error.name === 'NotFoundError') return res.sendStatus(httpStatus.NOT_FOUND);
     if (error.name === 'ForbiddenError') return res.sendStatus(httpStatus.FORBIDDEN);
-    return res.sendStatus(httpStatus.BAD_REQUEST);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
   }
 }

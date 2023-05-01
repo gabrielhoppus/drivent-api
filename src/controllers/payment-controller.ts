@@ -23,14 +23,6 @@ export async function getPayment(req: AuthenticatedRequest, res: Response) {
   }
 }
 
-type CardData = {
-  issuer: string;
-  number: number;
-  name: string;
-  expirationDate: Date;
-  cvv: number;
-};
-
 export async function makePayment(req: AuthenticatedRequest, res: Response) {
   try {
     const { ticketId, cardData } = req.body;

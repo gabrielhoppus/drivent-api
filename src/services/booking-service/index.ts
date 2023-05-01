@@ -1,6 +1,6 @@
 import bookingRepository from '@/repositories/booking-repository';
 import { notFoundError, forbiddenError } from '@/errors';
-import roomRepository from '@/repositories/room-repository';
+import hotelRepository from '@/repositories/hotel-repository';
 
 async function getBookingById(userId: number) {
   const booking = await bookingRepository.findBookingById(userId);
@@ -11,10 +11,13 @@ async function getBookingById(userId: number) {
 }
 
 async function bookRoom(userId: number, roomId: number) {
-  const room = await roomRepository.findRoomById(roomId);
+  const room = await hotelRepository.findRoomById(roomId);
 
   if (!room) throw notFoundError();
-  if (room.capacity === 0) throw forbiddenError();
+
+  const bookings = await bookingRepository.findBookingsByRoom(roomId);
+
+  if (bookings.length === room.capacity) throw forbiddenError();
 
   const booking = await bookingRepository.bookRoom(userId, room.id);
 
@@ -22,10 +25,11 @@ async function bookRoom(userId: number, roomId: number) {
 }
 
 async function updateBookingRoom(userId: number, bookingId: number, roomId: number) {
-  const room = await roomRepository.findRoomById(roomId);
+  const room = await hotelRepository.findRoomById(roomId);
   const booking = await bookingRepository.findBookingById(userId);
 
   if (!room || booking) throw notFoundError();
+
   if (room.capacity === 0) throw forbiddenError();
 
   const updatedBooking = await bookingRepository.updateBooking(bookingId, roomId);

@@ -6,3 +6,10 @@ export function notFoundError(): ApplicationError {
     message: 'No result for this search!',
   };
 }
+
+export function forbiddenError(): ApplicationError {
+  return {
+    name: 'ForbiddenError',
+    message: 'This action is forbidden',
+  };
+}

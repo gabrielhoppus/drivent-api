@@ -17,8 +17,8 @@ async function findBookingById(userId: number) {
 async function bookRoom(userId: number, roomId: number) {
   const booking = await prisma.booking.create({
     data: {
-      userId,
-      roomId,
+      userId: userId,
+      roomId: roomId,
     },
   });
 
@@ -28,7 +28,7 @@ async function bookRoom(userId: number, roomId: number) {
 async function findBookingsByRoom(roomId: number) {
   const bookings = await prisma.booking.findMany({
     where: {
-      id: roomId,
+      roomId,
     },
   });
   return bookings;

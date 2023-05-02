@@ -40,17 +40,18 @@ export async function createBooking(req: AuthenticatedRequest, res: Response) {
 }
 
 export async function updateBooking(req: AuthenticatedRequest, res: Response) {
+  const { userId } = req;
+  const { bookingId } = req.params;
+  const roomId = req.body.roomId;
   try {
-    const userId = req.userId;
-    const bookingId = Number(req.params.bookingId);
-    const roomId = req.body;
+    if (roomId < 1 || Number(bookingId) < 1 || isNaN(Number(bookingId))) return res.sendStatus(httpStatus.FORBIDDEN);
 
-    const booking = await bookingService.updateBookingRoom(userId, bookingId, roomId);
+    const booking = await bookingService.updateBookingRoom(userId, Number(bookingId), roomId);
 
     return res.send({ bookingId: booking.id }).status(httpStatus.OK);
   } catch (error) {
-    if (error.name === 'NotFoundError') return res.sendStatus(httpStatus.NOT_FOUND);
-    if (error.name === 'ForbiddenError') return res.sendStatus(httpStatus.FORBIDDEN);
+    if (error.name === 'NotFoundError') return res.status(httpStatus.NOT_FOUND).send(error.message);
+    if (error.name === 'ForbiddenError') return res.status(httpStatus.FORBIDDEN).send(error.message);
     res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
   }
 }

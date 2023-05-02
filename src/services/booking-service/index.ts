@@ -26,11 +26,14 @@ async function bookRoom(userId: number, roomId: number) {
 
 async function updateBookingRoom(userId: number, bookingId: number, roomId: number) {
   const room = await hotelRepository.findRoomById(roomId);
+  if (!room) throw notFoundError();
+
   const booking = await bookingRepository.findBookingById(userId);
+  if (!booking) throw forbiddenError();
 
-  if (!room || booking) throw notFoundError();
+  const bookings = await bookingRepository.findBookingsByRoom(roomId);
 
-  if (room.capacity === 0) throw forbiddenError();
+  if (bookings.length === room.capacity) throw forbiddenError();
 
   const updatedBooking = await bookingRepository.updateBooking(bookingId, roomId);
 

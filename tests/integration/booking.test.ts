@@ -300,7 +300,7 @@ describe('PUT /booking/:bookingId', () => {
       expect(res.status).toEqual(httpStatus.FORBIDDEN);
     });
 
-    it('should respond with status 403 when new room does not exist', async () => {
+    it('should respond with status 404 when new room does not exist', async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const enrollment = await createEnrollmentWithAddress(user);
